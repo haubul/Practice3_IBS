@@ -21,23 +21,24 @@ public class FirstTest {
 
         driver.get("http://localhost:8080");
 
+        // Открыть выпадающий список
         WebElement openNavbarDropdown = driver.findElement(By.xpath("//*[@id='navbarDropdown']"));
         openNavbarDropdown.click();
 
+        // Открыть список товаров
         WebElement getProductsListPage = driver.findElement(By.xpath("//*[@href='/food']"));
         getProductsListPage.click();
 
+        //Проверка, что список товаров открылся
         WebElement titleProductListPage = driver.findElement(By.xpath("//*[.='Список товаров']"));
-
         Assertions.assertEquals("Список товаров", titleProductListPage.getText(),
                 "Не перешли на страницу со списком товаров");
 
+        // Добавление товара без чекбокса
         WebElement addVegetableToList = driver.findElement(By.xpath("//*[.='Добавить']"));
-
         addVegetableToList.click();
 
         WebElement putVegetableName = driver.findElement(By.xpath("//*[@placeholder='Наименование']"));
-
         putVegetableName.sendKeys("Огурец");
 
         WebElement chooseVegetableType = driver.findElement(By.xpath("//*[@id='type']"));
@@ -46,18 +47,18 @@ public class FirstTest {
 
 
         WebElement saveButton = driver.findElement(By.xpath("//*[@id='save']"));
-
         saveButton.click();
 
+        // Проверка, что товар добавился
         Assertions.assertDoesNotThrow(() ->
             driver.findElement(By.xpath("//*[contains(text(), 'Огурец')]")));
 
-        WebElement addFruitToList = driver.findElement(By.xpath("//*[.='Добавить']"));
 
+        // Добавление товара с чекбоксом
+        WebElement addFruitToList = driver.findElement(By.xpath("//*[.='Добавить']"));
         addFruitToList.click();
 
         WebElement putFruitName = driver.findElement(By.xpath("//*[@placeholder='Наименование']"));
-
         putFruitName.sendKeys("Маракуйя");
 
         WebElement chooseFruitType = driver.findElement(By.xpath("//*[@id='type']"));
@@ -65,23 +66,23 @@ public class FirstTest {
         selectFruit.selectByVisibleText("Фрукт");
 
         WebElement chooseCheckbox = driver.findElement(By.xpath("//*[@id='exotic']"));
-
         chooseCheckbox.click();
 
         saveButton = driver.findElement(By.xpath("//*[@id='save']"));
-
         saveButton.click();
 
+        // Проверка, что товар добавился
         Assertions.assertDoesNotThrow(() ->
             driver.findElement(By.xpath("//*[contains(text(), 'Маракуйя')]")));
 
         openNavbarDropdown = driver.findElement(By.xpath("//*[@id='navbarDropdown']"));
         openNavbarDropdown.click();
 
+        // Сброс добавленных товаров
         WebElement resetButton = driver.findElement(By.xpath("//*[@id='reset']"));
         resetButton.click();
 
-        // Проверка, что элементы с данными "Огурец" и "Маракуйя" больше не существуют
+        // Проверка, что товары удалились
         Assertions.assertThrows(NoSuchElementException.class, () ->
             driver.findElement(By.xpath("//*[contains(text(), 'Огурец')]")));
 
