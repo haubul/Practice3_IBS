@@ -1,4 +1,4 @@
-package org.ibs;
+package org.ibs.tests;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
