@@ -1,22 +1,25 @@
 package org.ibs.tests;
 
 import org.ibs.basetestsclass.BaseTest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import java.sql.SQLException;
 
 /**
- * Тестовый класс для UI
+ * Тестовый класс для страницы с продуктами
  */
+
+// Аннотация для указания очередности выполнения тестов
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 public class ProductPageTest extends BaseTest {
 
     /**
-     * Метод логики теста
+     * Метод логики теста для добавления и удаления товаров
      */
     @Test
+    @Order(1)
     void AddAndDeleteNewProductTest() throws SQLException {
         // Открыть выпадающий список
         productPage.openNavbarDropdown();
@@ -67,4 +70,29 @@ public class ProductPageTest extends BaseTest {
         Assertions.assertFalse(databaseManager.isProductInDatabase("Маракуйя", "Фрукт", 1),
                 "Товар 'Маракуйя' не был удален из БД");
     }
+
+    /**
+     * Метод логики теста для добавления уже существующего товара
+     */
+    @Test
+    @Order(2)
+    void AddExistingProductTest() throws SQLException {
+        // Открыть выпадающий список
+        productPage.openNavbarDropdown();
+
+        // Открыть список товаров
+        productPage.openProductsListPage();
+
+        // Проверка, что список товаров открылся
+        Assertions.assertEquals("Список товаров", productPage.getTitleProductListPage(),
+                "Не перешли на страницу со списком товаров");
+
+        // Добавление уже существующего товара
+        productPage.addProductToList("Яблоко", "Фрукт", false);
+
+        // Проверка, что товар не добавился в БД
+        Assertions.assertFalse(databaseManager.isProductInDatabase("Яблоко", "FRUIT", 0),
+                "Товар 'Яблоко' был добавлен в БД, хотя не должен был");
+    }
+
 }
