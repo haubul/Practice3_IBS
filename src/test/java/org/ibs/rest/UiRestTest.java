@@ -117,8 +117,10 @@ public class UiRestTest {
                 .get("/api/food");
         System.out.println("\nСтатус код получения: " + getProductAfterDel.getStatusCode());
         System.out.println("Ответ:" + getProductAfterDel.getBody().asString());
-        Assertions.assertNotEquals(true, getProductAfterDel.jsonPath().getList("name").contains("Огурец"), "Товар 'Огурец' не удален");
-        Assertions.assertNotEquals(true, getProductAfterDel.jsonPath().getList("name").contains("Маракуйя"), "Товар 'Маракуйя' не удален");
+        Assertions.assertFalse(getProductAfterDel.jsonPath().getList("name").contains("Огурец"),
+                "Товар 'Огурец' не удален");
+        Assertions.assertFalse(getProductAfterDel.jsonPath().getList("name").contains("Маракуйя"),
+                "Товар 'Маракуйя' не удален");
 
     }
 
