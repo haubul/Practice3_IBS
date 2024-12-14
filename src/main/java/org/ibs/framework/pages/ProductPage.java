@@ -3,7 +3,11 @@ package org.ibs.framework.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 /**
  * Описание страницы с продуктами
@@ -57,7 +61,9 @@ public class ProductPage {
         WebElement addProductToList = driver.findElement(By.xpath("//*[.='Добавить']"));
         addProductToList.click();
 
-        WebElement putProductName = driver.findElement(By.xpath("//*[@placeholder='Наименование']"));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement putProductName = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@placeholder='Наименование']")));
         putProductName.sendKeys(productName);
 
         WebElement chooseProductType = driver.findElement(By.xpath("//*[@id='type']"));

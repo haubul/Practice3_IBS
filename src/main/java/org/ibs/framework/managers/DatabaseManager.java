@@ -16,16 +16,38 @@ public class DatabaseManager {
      * Переменная для хранения объекта соединения
      */
 
-    private final Connection connection;
+    private Connection connection;
+
+    private static final TestPropManager props = TestPropManager.getTestPropManager();
+
+    public DatabaseManager() throws SQLException {
+        initDatabase();
+    }
+
+    public void initDatabase() throws SQLException {
+        if ("remote".equalsIgnoreCase(props.getProperty("type.db"))){
+            initRemoteDatabase();
+        } else{
+            initLocalDatabase();
+        }
+    }
 
     /**
      *  Инициализирует соединение с базой данных
      * @throws SQLException - если возникает ошибка при соединении с базой данных
      */
 
-    public DatabaseManager() throws SQLException {
+    public void initLocalDatabase() throws SQLException {
         connection = DriverManager.getConnection(
                 "jdbc:h2:tcp://localhost:9092/mem:testdb",
+                "user",
+                "pass"
+        );
+    }
+
+    public void initRemoteDatabase() throws  SQLException {
+        connection = DriverManager.getConnection(
+                "jdbc:h2:tcp://qualit.applineselenoid.fvds.ru/mem:testdb",
                 "user",
                 "pass"
         );

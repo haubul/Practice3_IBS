@@ -1,6 +1,7 @@
 package org.ibs.basetestsclass;
 
 import org.ibs.framework.managers.DatabaseManager;
+import org.ibs.framework.managers.TestPropManager;
 import org.ibs.framework.managers.WebDriverManager;
 import org.ibs.framework.pages.ProductPage;
 import org.ibs.framework.utils.Consts;
@@ -10,7 +11,7 @@ import org.openqa.selenium.WebDriver;
 import java.sql.SQLException;
 
 /**
- * Класс с настройками перед тестами
+ * РљР»Р°СЃСЃ СЃ РЅР°СЃС‚СЂРѕР№РєР°РјРё РїРµСЂРµРґ С‚РµСЃС‚Р°РјРё
  */
 
 public class BaseTest {
@@ -20,31 +21,60 @@ public class BaseTest {
     protected ProductPage productPage;
     protected DatabaseManager databaseManager;
 
+    private static final TestPropManager props = TestPropManager.getTestPropManager();
+
     /**
-     * Метод, выполняемый перед каждым тестом
-     * Инициализирует менеджер веб-драйвера, получает экземпляр веб-драйвера,
-     * создает экземпляр страницы и открывает базовую ссылку.
-     * создает экземпляр базы данных
+     * РњРµС‚РѕРґ РґР»СЏ РІС‹Р±РѕСЂР° URL РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РёРїР° РѕРєСЂСѓР¶РµРЅРёСЏ
      */
+    private void initUrl() {
+        if ("remote".equalsIgnoreCase(props.getProperty("type.driver"))) {
+            initRemoteUrl();
+        } else {
+            initLocalUrl();
+        }
+    }
+
+    /**
+     * РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ URL РґР»СЏ Р»РѕРєР°Р»СЊРЅРѕРіРѕ РѕРєСЂСѓР¶РµРЅРёСЏ
+     */
+    private void initLocalUrl() {
+        driver.get(Consts.LOCAL_URL);
+    }
+
+    /**
+     * РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ URL РґР»СЏ СѓРґР°Р»РµРЅРЅРѕРіРѕ РѕРєСЂСѓР¶РµРЅРёСЏ
+     */
+    private void initRemoteUrl() {
+        driver.get(Consts.REMOTE_URL);
+    }
+
+    /**
+     * РњРµС‚РѕРґ, РІС‹РїРѕР»РЅСЏРµРјС‹Р№ РїРµСЂРµРґ РєР°Р¶РґС‹Рј С‚РµСЃС‚РѕРј
+     * РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РјРµРЅРµРґР¶РµСЂ РІРµР±-РґСЂР°Р№РІРµСЂР°, РїРѕР»СѓС‡Р°РµС‚ СЌРєР·РµРјРїР»СЏСЂ РІРµР±-РґСЂР°Р№РІРµСЂР°,
+     * СЃРѕР·РґР°РµС‚ СЌРєР·РµРјРїР»СЏСЂ СЃС‚СЂР°РЅРёС†С‹ Рё РѕС‚РєСЂС‹РІР°РµС‚ Р±Р°Р·РѕРІСѓСЋ СЃСЃС‹Р»РєСѓ.
+     * СЃРѕР·РґР°РµС‚ СЌРєР·РµРјРїР»СЏСЂ Р±Р°Р·С‹ РґР°РЅРЅС‹С…
+     */
+
+
     @BeforeEach
     public void beforeAll() throws SQLException {
         webDriverManager = new WebDriverManager();
         driver = webDriverManager.getDriver();
         productPage = new ProductPage(driver);
-        driver.get(Consts.BASE_URL);
+        initUrl();
         databaseManager = new DatabaseManager();
     }
 
     /**
-     * Метод, выполняемый после каждого теста
-     * постусловие - удаляет товары из БД
-     * закрывает сессию драйвера и браузер
-     * закрывает соединение с базой данных
+     * РњРµС‚РѕРґ, РІС‹РїРѕР»РЅСЏРµРјС‹Р№ РїРѕСЃР»Рµ РєР°Р¶РґРѕРіРѕ С‚РµСЃС‚Р°
+     * РїРѕСЃС‚СѓСЃР»РѕРІРёРµ - СѓРґР°Р»СЏРµС‚ С‚РѕРІР°СЂС‹ РёР· Р‘Р”
+     * Р·Р°РєСЂС‹РІР°РµС‚ СЃРµСЃСЃРёСЋ РґСЂР°Р№РІРµСЂР° Рё Р±СЂР°СѓР·РµСЂ
+     * Р·Р°РєСЂС‹РІР°РµС‚ СЃРѕРµРґРёРЅРµРЅРёРµ СЃ Р±Р°Р·РѕР№ РґР°РЅРЅС‹С…
      */
     @AfterEach
     public void afterEach() throws SQLException {
-        databaseManager.deleteProductFromDatabase("Огурец");
-        databaseManager.deleteProductFromDatabase("Маракуйя");
+        databaseManager.deleteProductFromDatabase("РћРіСѓСЂРµС†");
+        databaseManager.deleteProductFromDatabase("РњР°СЂР°РєСѓР№СЏ");
         webDriverManager.quitDriver();
         databaseManager.closeConnection();
     }
